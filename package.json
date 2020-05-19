@@ -1,0 +1,12 @@
+{
+  "name": "mixmix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/mixmix.js",
+  "scripts": {
+    "build": "cd src&&build.bat mixmix"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {}
+}
