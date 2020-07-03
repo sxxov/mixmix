@@ -1,6 +1,6 @@
 {
   "name": "mixmix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "mixin and mingles, for multiple classes",
   "main": "dist/mixmix.js",
   "scripts": {
