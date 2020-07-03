@@ -1,12 +1,20 @@
 {
   "name": "mixmix",
   "version": "1.0.0",
-  "description": "",
+  "description": "mixin and mingles, for multiple classes",
   "main": "dist/mixmix.js",
   "scripts": {
     "build": "cd src&&build.bat mixmix"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sxxov/mixmix"
+  },
+  "homepage": "https://github.com/Sxxov/mixmix#readme",
+  "bugs": {
+    "url": "https://github.com/Sxxov/mixmix/issues"
+  },
+  "author": "jiasheng",
   "license": "ISC",
   "devDependencies": {}
 }
