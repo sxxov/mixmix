@@ -2,6 +2,8 @@
 
 type ClassItem = (new (...args: any[]) => any);
 
+declare module 'mixmix';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mixmix(
 	...classes: ClassItem[]
@@ -40,17 +42,34 @@ function mixmix(
 						return;
 					}
 
+					// make props enumarable
+					const classPropertyDescriptors = Object
+						.getOwnPropertyDescriptors(
+							new (classes
+								.filter(
+									(sourceClass) => sourceClass.name === argsKey,
+								)[0])(),
+						);
+					const classPropertyDescriptorsKeys = Object.keys(classPropertyDescriptors);
+					const classPropertyDescriptorsValues = Object.values(classPropertyDescriptors);
+					const enumerableClassPropertyDescriptors = ((): typeof classPropertyDescriptors => {
+						const workingObject = {};
+
+						classPropertyDescriptorsKeys.forEach((classPropertyDescriptorsKey, i) => {
+							workingObject[classPropertyDescriptorsKey] = {
+								...classPropertyDescriptorsValues[i],
+								enumerable: true,
+							};
+						});
+
+						return workingObject;
+					})();
+
 					// invoke!!!
 					Object
 						.defineProperties(
 							this,
-							Object
-								.getOwnPropertyDescriptors(
-									new (classes
-										.filter(
-											(sourceClass) => sourceClass.name === argsKey,
-										)[0])(),
-								),
+							enumerableClassPropertyDescriptors,
 						);
 				},
 			);
@@ -92,7 +111,10 @@ function mixmix(
 					Object.defineProperty(
 						processedTargetClassItem,
 						propertyName,
-						propertyDescriptors[propertyName],
+						{
+							...propertyDescriptors[propertyName],
+							enumerable: true,
+						},
 					);
 				},
 			);
