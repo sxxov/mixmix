@@ -24,7 +24,7 @@ function mixmix(
 		|  |	new B('argument');
 		|  |	new IgApiClient('username', 'password');
 		\ */
-		constructor(args: Record<string, any[]>) {
+		constructor(args?: Record<string, any[]>) {
 			const classNames = classes
 				.map(
 					(sourceClass) => Object
