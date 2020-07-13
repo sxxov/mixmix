@@ -1,3 +1,4 @@
+
 # mixmix
 
 mix, stir, and blend; solve the problems with 'extend'
@@ -83,18 +84,24 @@ interface Sandwich extends Sand, Witch {}
 
 #### Merge and instantiate:
 
-`mixmix()` will return a new class with a modified constructor. This constructor is sort of a "master" constructor as it is in charge of instantiating all of the combined child constructors.
+`mixmix()` will return a new class with a modified "master" constructor that invokes all the child constructors:
+
+```ts
+// ...mixmix()
+return class MixMixed {
+	constructor(args?: Record<string, any>) {
+		// master constructor
+	}
+}
+```
+The name of the class will be a `string` as the key;
+Arguments intended to be passed to the invoked constructor will be an `array` in the value:
+It will then go one key at a time (sequentially) and invoke the constructor with the name of the key.
+
+For example, these lines of code:
 
 ```ts
 const Sandwich = mixmix(Sand, Witch);
-const mSandwich = new Sandwich({Sand: [], Witch: []})
-```
-
-As seen above, `mixmix()` will take in an object of type: `Record<string, any[]>`. The name of the class will be the key, while the arguments intended to be passed to the invoked constructor will be an array in the value. It will then go one key at a time (sequentially) and invoke the constructor with the name of the key.
-
-For example, this line of code:
-
-```js
 const mSandwich = new Sandwich({
     Sand: [], 
     Witch: ['Son', 'of', 'a', NaN],
@@ -103,7 +110,7 @@ const mSandwich = new Sandwich({
 
 will invoke:
 
-```js
+```ts
 new Sand();
 new Witch('Son', 'of', 'a', NaN);
 ```
@@ -124,18 +131,37 @@ const mFoo = new (mixin(Foo))({
 })
 ```
 
-will result in `mFoo` having `bar` inside its instance.
+will result in:
+```ts
+console.log(mFoo.bar)
+// 69
+```
 
+> Note: if `undefined` is passed into the constructor, it will instantiate all of the classes according to the order of `Object.getOwnPropertyDescriptors()`:
+> 
+> For example, these lines of code:
+> ```ts 
+> const Sandwich = mixmix(Sand, Witch);
+> const mSandwich = new Sandwich();
+> ```
+> will equal to:
+> ```ts
+> const Sandwich = mixmix(Sand, Witch);
+> const mSandwich = new Sandwich({
+>     Sand: [],
+>     Wich: [],
+> });
+> ```
 
 
 ### Building
 
-A `build.bat` file is provided in the `./src` directory (sorry linux/mac users).
-
-`header.js` and `header.esm.js` files are used to prefix the final built files.
+* A `build.bat` file is provided in the `./src` directory (sorry linux/mac users).
+* `%1` (the first argument) will determine the output file names
+* `header.js` and `header.esm.js` files are used to prefix the final built files.
 
 
 
 ### Contributing
 
-If you fork this repo and find ways to make improvements (or find one of the probably many bugs), feel free to submit a pull request!
+If you find ways to make improvements (or find one of the probably many bugs), feel free to submit a pull request!
