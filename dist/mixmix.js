@@ -22,7 +22,13 @@ function mixmix() {
                 .getOwnPropertyDescriptors(sourceClass)
                 .name
                 .value; });
-            var argsKeys = Object.keys(Object(args));
+            var argsKeys = (function () {
+                var keys = Object.keys(Object(args));
+                if (keys.length === 0) {
+                    return classNames;
+                }
+                return keys;
+            })();
             argsKeys.forEach(function (argsKey) {
                 if (!classNames.includes(argsKey)) {
                     return;

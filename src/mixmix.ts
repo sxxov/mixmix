@@ -32,7 +32,15 @@ function mixmix(
 						.name
 						.value,
 				);
-			const argsKeys = Object.keys(Object(args));
+			const argsKeys = ((): string[] => {
+				const keys = Object.keys(Object(args));
+
+				if (keys.length === 0) {
+					return classNames;
+				}
+
+				return keys;
+			})();
 
 			// use 'argsKeys' instead of 'className' to invoke in order of keys in 'args'
 			argsKeys.forEach(
