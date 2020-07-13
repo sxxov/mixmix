@@ -1,4 +1,4 @@
-var __assign = (this && this.__assign) || function () {
+typeof window!='undefined'&&(window.mixmix=mixmix);typeof exports!='undefined'&&(module.exports=exports.default=mixmix,exports.__esModule={value:!0});typeof define=='function'&&define(()=>{return mixmix});var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
             s = arguments[i];
