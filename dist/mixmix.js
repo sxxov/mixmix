@@ -1,15 +1,4 @@
-typeof window!='undefined'&&(window.mixmix=mixmix);typeof exports!='undefined'&&(module.exports=exports.default=mixmix,exports.__esModule={value:!0});typeof define=='function'&&define(()=>{return mixmix});var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-function mixmix() {
+typeof window!='undefined'&&(window.mixmix=mixmix);typeof exports!='undefined'&&(module.exports=exports.default=mixmix,exports.__esModule={value:!0});typeof define=='function'&&define(()=>{return mixmix});function mixmix() {
     var classes = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         classes[_i] = arguments[_i];
@@ -33,20 +22,10 @@ function mixmix() {
                 if (!classNames.includes(argsKey)) {
                     return;
                 }
-                var classPropertyDescriptors = Object
-                    .getOwnPropertyDescriptors(new (classes
-                    .filter(function (sourceClass) { return sourceClass.name === argsKey; })[0])());
-                var classPropertyDescriptorsKeys = Object.keys(classPropertyDescriptors);
-                var classPropertyDescriptorsValues = Object.values(classPropertyDescriptors);
-                var enumerableClassPropertyDescriptors = (function () {
-                    var workingObject = {};
-                    classPropertyDescriptorsKeys.forEach(function (classPropertyDescriptorsKey, i) {
-                        workingObject[classPropertyDescriptorsKey] = __assign(__assign({}, classPropertyDescriptorsValues[i]), { enumerable: true });
-                    });
-                    return workingObject;
-                })();
                 Object
-                    .defineProperties(_this, enumerableClassPropertyDescriptors);
+                    .defineProperties(_this, Object
+                    .getOwnPropertyDescriptors(new (classes
+                    .filter(function (sourceClass) { return sourceClass.name === argsKey; })[0])()));
             });
         }
         return MixMixed;
@@ -71,7 +50,7 @@ function mixmix() {
             if (basePropertyNames.includes(propertyName)) {
                 return;
             }
-            Object.defineProperty(processedTargetClassItem, propertyName, __assign(__assign({}, propertyDescriptors[propertyName]), { enumerable: true }));
+            Object.defineProperty(processedTargetClassItem, propertyName, propertyDescriptors[propertyName]);
         });
         return processedTargetClassItem;
     }

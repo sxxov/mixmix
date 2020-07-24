@@ -50,34 +50,17 @@ function mixmix(
 						return;
 					}
 
-					// make props enumarable
-					const classPropertyDescriptors = Object
-						.getOwnPropertyDescriptors(
-							new (classes
-								.filter(
-									(sourceClass) => sourceClass.name === argsKey,
-								)[0])(),
-						);
-					const classPropertyDescriptorsKeys = Object.keys(classPropertyDescriptors);
-					const classPropertyDescriptorsValues = Object.values(classPropertyDescriptors);
-					const enumerableClassPropertyDescriptors = ((): typeof classPropertyDescriptors => {
-						const workingObject = {};
-
-						classPropertyDescriptorsKeys.forEach((classPropertyDescriptorsKey, i) => {
-							workingObject[classPropertyDescriptorsKey] = {
-								...classPropertyDescriptorsValues[i],
-								enumerable: true,
-							};
-						});
-
-						return workingObject;
-					})();
-
 					// invoke!!!
 					Object
 						.defineProperties(
 							this,
-							enumerableClassPropertyDescriptors,
+							Object
+								.getOwnPropertyDescriptors(
+									new (classes
+										.filter(
+											(sourceClass) => sourceClass.name === argsKey,
+										)[0])(),
+								),
 						);
 				},
 			);
@@ -119,10 +102,7 @@ function mixmix(
 					Object.defineProperty(
 						processedTargetClassItem,
 						propertyName,
-						{
-							...propertyDescriptors[propertyName],
-							enumerable: true,
-						},
+						propertyDescriptors[propertyName],
 					);
 				},
 			);
