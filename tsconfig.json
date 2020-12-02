@@ -1,11 +1,17 @@
 {
 	"compilerOptions": {
-	  	"target": "es5",
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"module": "es2020",
+		"target": "esnext",
+		"resolveJsonModule": true,
 		"sourceMap": true,
+		"moduleResolution": "node",
 		"lib": ["es6", "es2017", "ES2015", "ESNext"],
 		"allowSyntheticDefaultImports": true,
-		"outDir": "./dist",
-		"removeComments": true,
-		"declaration": true,
-	}
-  }
+	},
+    "exclude": [
+		"node_modules",
+		"dist",
+	]
+}
