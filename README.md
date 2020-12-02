@@ -3,14 +3,15 @@
 
 mix, stir, and blend; solve the problems with 'extend'
 
-(0.4kb, ESM version, minified & gzipped)
+>  (**0.4kb**, ESM version, minified & gzipped).
 
 
 
 ## What it can do
 
-* Enable multiple inheritance for ES6 classes in Javascript
-* Merge classes and instantiate them into one big class
+* Enable multiple inheritance for ES6 classes in Javascript (and Typescript).
+* Merge classes into one big class.
+* Instantiate the merged classes with arguments passed into the individual classes.
 
 
 
@@ -40,7 +41,7 @@ If you prefer using CDN's instead:
 
 
 
-## Basic Usage
+## Usage
 
 #### Initial setup:
 
@@ -84,8 +85,11 @@ class Sandwich extends mixmix(Sand, Witch) {
 Optionally, in typescript you may add an `interface` to get back type checking functionality:
 
 ```ts
+// interface that extends the same things that is mixed
 interface Sandwich extends Sand, Witch {}
-// ...class Sandwich extends mixmix(Sand, Witch) {}
+class Sandwich extends mixmix(Sand, Witch) {
+    // ...
+}
 ```
 
 
@@ -95,78 +99,116 @@ interface Sandwich extends Sand, Witch {}
 `mixmix()` will return a new class with a modified "master" constructor that invokes all the child constructors:
 
 ```ts
-// ...mixmix()
-return class MixMixed {
-	constructor(args?: Record<string, any>) {
-		// master constructor
-	}
-}
+const Sandwich = mixmix(Sand, Witch);
+/* 
+	Returns:
+	
+    class SandWitch {
+        constructor(parametersMap: Record<ClassNameString, any> | any[] = null) {
+            // master constructor
+        }
+    } 
+*/
 ```
-The name of the class will be a `string` as the key;
-Arguments intended to be passed to the invoked constructor will be an `array` in the value:
-It will then go one key at a time (sequentially) and invoke the constructor with the name of the key.
+The results of the invocation will be applied to the master class's instance, which in the following case will be `sandwich` :
 
-For example, these lines of code:
+```ts
+const sandwich = new Sandwich(/* ...parametersMap (see below) */);
+```
+
+The name property of the class will then be the combination of all classes:
+
+```ts
+sandwich.name
+/* 
+	Returns:
+	
+	"SandWitch"
+*/
+```
+
+>Note: This will probably not be the *class variable name* you will be referencing in your code, as it will more likely be the variable it's stored in (eg. `const A = mixmix(A, B); A.name === 'AB'`).
+
+
+
+##### `parametersMap`
+
+`Record<ClassNameString, any> | any[] | null | undefined`
+
+It takes in:
+
+1. Object with the target class's name ("`Sand`" or "`Witch`") as the key, and an array with parameters to pass into its constructor as the value.
+2. Array with parameters to pass into all of the constructors.
+3. `null` or `undefined`
+
+###### `parametersMap`'s Examples:
+
+1. `Record<ClassNameString, any[]>`
 
 ```ts
 const Sandwich = mixmix(Sand, Witch);
-const mSandwich = new Sandwich({
-    Sand: [], 
+const sandwich = new Sandwich({
+    Sand: [],
     Witch: ['Son', 'of', 'a', NaN],
 });
+/*
+	Executes:
+	
+	new Sand();
+	new Witch('Son', 'of', 'a', NaN);
+*/
 ```
 
-will invoke:
+2. `any[]`
 
 ```ts
-new Sand();
-new Witch('Son', 'of', 'a', NaN);
+const Sandwich = mixmix(Sand, Witch);
+const sandwich = new Sandwich(['Sand', 'of', 'a', NaN]);
+/*
+	Executes:
+	
+	new Sand('Sand', 'of', 'a', NaN);
+	new Witch('Sand', 'of', 'a', NaN);
+	
+	
+	
+	Is Equivalent to:
+	
+	new Sandwich({
+		Sand: ['Sand', 'of', 'a', NaN],
+		Witch: ['Sand', 'of', 'a', NaN],
+	})
+*/
 ```
 
-The results of the invocation will be applied to the master class, which in this case is `Sandwich` 
+3. `null | undefined`
 
-For example, these lines of code:
-
-```js
-class Foo {
-    constructor() {
-        this.bar = 69;
-    }
-}
-
-const mFoo = new (mixin(Foo))({
-    Foo: [],
-})
-```
-
-will result in:
 ```ts
-console.log(mFoo.bar)
-// 69
+const Sandwich = mixmix(Sand, Witch);
+const sandwich = new Sandwich();
+/*
+	Executes:
+	
+	new Sand();
+	new Witch();
+	
+	
+	
+	Is Equivalent to:
+	
+	new Sandwich({
+		Sand: [],
+		Witch: [],
+	})
+*/
 ```
 
-> Note: if `undefined` is passed into the constructor, it will instantiate all of the classes according to the order of `Object.getOwnPropertyDescriptors()`:
-> 
-> For example, these lines of code:
-> ```ts 
-> const Sandwich = mixmix(Sand, Witch);
-> const mSandwich = new Sandwich();
-> ```
-> will equal to:
-> ```ts
-> const Sandwich = mixmix(Sand, Witch);
-> const mSandwich = new Sandwich({
->     Sand: [],
->     Wich: [],
-> });
-> ```
 
 
-### Building
+### Building/Testing
 
-* A `build.bat` file is provided in the `./src` directory (sorry linux/mac users).
-* `%1` (the first argument) will determine the output file names
-* `header.js` and `header.esm.js` files are used to prefix the final built files.
+* `npm run build` to build using Rollup into the "dist" folder.
+* ```npm run test``` to test using Jest with the tests in the "test" folder.
 
 
 
