@@ -104,7 +104,7 @@ const Sandwich = mixmix(Sand, Witch);
 	Returns:
 	
     class SandWitch {
-        constructor(parametersMap: Record<ClassNameString, any> | any[] = null) {
+        constructor(parametersMap: Record<ClassNameString, any[]> | any[] = null) {
             // master constructor
         }
     } 
@@ -133,7 +133,7 @@ sandwich.name
 
 ##### `parametersMap`
 
-`Record<ClassNameString, any> | any[] | null | undefined`
+`Record<ClassNameString, any[]> | any[] | null | undefined`
 
 It takes in:
 
