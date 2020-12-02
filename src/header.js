@@ -1,1 +1,0 @@
-typeof window!='undefined'&&(window.mixmix=mixmix);typeof exports!='undefined'&&(module.exports=exports.default=mixmix,exports.__esModule={value:!0});typeof define=='function'&&define(()=>{return mixmix});
