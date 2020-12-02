@@ -3,6 +3,8 @@
 
 mix, stir, and blend; solve the problems with 'extend'
 
+(0.4kb, ESM version, minified & gzipped)
+
 
 
 ## What it can do
@@ -23,11 +25,17 @@ npm i mixmix
 If you prefer using CDN's instead:
 
 ```html
-<!-- for DOM (window.mixmix), CommonJS, AMD -->
-<script src="...coming soon/mixmix.min.js"></script>
+<!-- UMD (ES6 and above) -->
+<!-- Example usage: window.mixmix() or require()... -->
+<script src="https://unpkg.com/mixmix/dist/mixmix.min.js"></script>
 
-<!-- for ESM (import mixmix from 'mixmix') -->
-<script src="...coming soon/mixmix.esm.min.js"></script>
+<!-- ESM (ES6 and above) -->
+<!-- Example usage: import mixmix from 'mixmix' -->
+<script src="https://unpkg.com/mixmix/dist/mixmix.min.esm.js"></script>
+
+<!-- UMD (ES5) -->
+<!-- Example usage: window.mixmix() or require()... -->
+<script src="https://unpkg.com/mixmix/dist/mixmix.min.es5.js"></script>
 ```
 
 
