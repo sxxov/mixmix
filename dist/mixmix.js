@@ -80,7 +80,10 @@
             const sourceClass = classes[i];
             // clone base class & prototype separately to be able to deal with constructor
             defineProperties(MixedClass, sourceClass, BASE_CLASS_PROPERTIES);
-            defineProperties(MixedClass.prototype, sourceClass.prototype, BASE_CLASS_PROTOTYPE_PROPERTIES);
+            // can happen if mixing instances
+            if (sourceClass.prototype) {
+                defineProperties(MixedClass.prototype, sourceClass.prototype, BASE_CLASS_PROTOTYPE_PROPERTIES);
+            }
         }
         return MixedClass;
     }

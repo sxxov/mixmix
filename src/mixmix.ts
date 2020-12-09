@@ -129,11 +129,15 @@ export default function mixmix(
 			sourceClass,
 			BASE_CLASS_PROPERTIES,
 		);
-		defineProperties(
-			MixedClass.prototype,
-			sourceClass.prototype,
-			BASE_CLASS_PROTOTYPE_PROPERTIES,
-		);
+
+		// can happen if mixing instances
+		if (sourceClass.prototype) {
+			defineProperties(
+				MixedClass.prototype,
+				sourceClass.prototype,
+				BASE_CLASS_PROTOTYPE_PROPERTIES,
+			);
+		}
 	}
 
 	return MixedClass;

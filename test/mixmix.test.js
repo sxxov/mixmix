@@ -92,7 +92,7 @@ test('Override value', () => {
 
 	expect(mixMixed.wand)
 		.toBe(10);
-})
+});
 
 test('With constructor at index', () => {
 	const MixMixed = mixmix.withConstructorAt(0, Sand, Witch);
@@ -100,4 +100,13 @@ test('With constructor at index', () => {
 
 	expect(mixMixed.id)
 		.toBe('007');
-})
+});
+
+test('Mix instance', () => {
+	const mixMixed = mixmix(new Sand(2, 2), new Witch('a', 'b'));
+
+	expect(mixMixed.particleAmount)
+		.toBe(4);
+	expect(mixMixed.id)
+		.toBe('69');
+});
