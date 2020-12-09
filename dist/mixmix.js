@@ -10,16 +10,43 @@
     const BASE_CLASS_PROPERTIES = Object.getOwnPropertyNames(class {
     }).concat('name');
     const BASE_CLASS_PROTOTYPE_PROPERTIES = ['constructor'];
+    const BASE_OPTIONS = {
+        constructorIndex: null,
+        isUsingSameParamsIntoConstructors: null,
+    };
+    mixmix.constructorIndex = null;
+    // todo: use deep copy if using nested objects
+    mixmix.options = { ...BASE_OPTIONS };
+    mixmix.withConstructorAt = (index = 0, ...classes) => {
+        mixmix.options.constructorIndex = index;
+        return mixmix(...classes);
+    };
+    mixmix.withSameParamsIntoConstructors = (...classes) => {
+        mixmix.options.isUsingSameParamsIntoConstructors = true;
+        return mixmix(...classes);
+    };
+    // don't use directly,
+    // use `withX` methods for now until nested options objects are implemented
+    /** @deprecated */
+    mixmix.withOptions = (options, ...classes) => {
+        mixmix.options = options;
+        return mixmix(...classes);
+    };
     function mixmix(...classes) {
+        let mixedClassClasses = classes;
+        const { isUsingSameParamsIntoConstructors, constructorIndex, } = mixmix.options;
+        if (constructorIndex != null) {
+            mixedClassClasses = [classes[constructorIndex]];
+        }
         class MixedClass {
-            constructor(parametersMap = null) {
-                const allClassNames = classes
+            constructor(...parametersMap) {
+                const allClassNames = mixedClassClasses
                     .map((sourceClass) => sourceClass?.name);
-                const isIntantiatingAllWithOverrideValue = (Array.isArray(parametersMap)
-                    || parametersMap == null);
+                const isIntantiatingAllWithOverrideValue = !!isUsingSameParamsIntoConstructors
+                    || constructorIndex != null;
                 const parametersClassNames = isIntantiatingAllWithOverrideValue
                     ? allClassNames
-                    : Object.keys(parametersMap);
+                    : Object.keys(parametersMap[0] ?? {});
                 // use 'argsKeys' instead of 'className' to invoke in order of keys in 'args'
                 for (let i = 0, l = parametersClassNames.length; i < l; ++i) {
                     const parametersClassName = parametersClassNames[i];
@@ -34,13 +61,15 @@
                     // invoke!!!
                     Object
                         .defineProperties(this, Object
-                        .getOwnPropertyDescriptors(new classes[indexOfParametersClassName](...(isIntantiatingAllWithOverrideValue
+                        .getOwnPropertyDescriptors(new mixedClassClasses[indexOfParametersClassName](...(isIntantiatingAllWithOverrideValue
                         // will be array since it's override value
-                        ? parametersMap
-                        : parametersMap[parametersClassName]))));
+                        ? parametersMap ?? []
+                        : parametersMap[0][parametersClassName] ?? []))));
                 }
             }
         }
+        // reset options (fake instance things)
+        mixmix.options = { ...BASE_OPTIONS };
         const mixedClassName = classes
             .map((sourceClass) => sourceClass.name)
             .join('');

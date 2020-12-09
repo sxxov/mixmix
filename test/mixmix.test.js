@@ -84,4 +84,20 @@ test('Class name', () => {
 
 	expect(MixMixed.name)
 		.toBe(Sand.name + Witch.name);
+});
+
+test('Override value', () => {
+	const MixMixed = mixmix.withSameParamsIntoConstructors(Sand, Witch);
+	const mixMixed = new MixMixed(10, 10);
+
+	expect(mixMixed.wand)
+		.toBe(10);
+})
+
+test('With constructor at index', () => {
+	const MixMixed = mixmix.withConstructorAt(0, Sand, Witch);
+	const mixMixed = new MixMixed();
+
+	expect(mixMixed.id)
+		.toBe('007');
 })

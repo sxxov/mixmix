@@ -6,10 +6,49 @@ type ClassNameString = string;
 // in chrome, anonymous classes have the `name` property, but in node they don't
 const BASE_CLASS_PROPERTIES = Object.getOwnPropertyNames(class {}).concat('name');
 const BASE_CLASS_PROTOTYPE_PROPERTIES = ['constructor'];
+const BASE_OPTIONS: {
+	constructorIndex: number;
+	isUsingSameParamsIntoConstructors: boolean;
+} = {
+	constructorIndex: null,
+	isUsingSameParamsIntoConstructors: null,
+};
+
+mixmix.constructorIndex = null;
+// todo: use deep copy if using nested objects
+mixmix.options = { ...BASE_OPTIONS };
+mixmix.withConstructorAt = (index = 0, ...classes: Class[]): Class => {
+	mixmix.options.constructorIndex = index;
+
+	return mixmix(...classes);
+};
+mixmix.withSameParamsIntoConstructors = (...classes: Class[]): Class => {
+	mixmix.options.isUsingSameParamsIntoConstructors = true;
+
+	return mixmix(...classes);
+};
+// don't use directly,
+// use `withX` methods for now until nested options objects are implemented
+/** @deprecated */
+mixmix.withOptions = (options: typeof BASE_OPTIONS, ...classes: Class[]): Class => {
+	mixmix.options = options;
+
+	return mixmix(...classes);
+};
 
 export default function mixmix(
 	...classes: Class[]
 ): Class {
+	let mixedClassClasses = classes;
+	const {
+		isUsingSameParamsIntoConstructors,
+		constructorIndex,
+	} = mixmix.options;
+
+	if (constructorIndex != null) {
+		mixedClassClasses = [classes[constructorIndex]];
+	}
+
 	class MixedClass {
 		/* \
 		|  | constructor will be executed if name of class is present as key in 'args',
@@ -26,18 +65,16 @@ export default function mixmix(
 		|  |	new B('argument');
 		|  |	new IgApiClient('username', 'password');
 		\ */
-		constructor(parametersMap: any[])
+		constructor(...parameters: any[])
 		constructor(parametersMap: Record<ClassNameString, any[]>)
-		constructor(parametersMap: Record<ClassNameString, any[]> | any[] = null) {
-			const allClassNames = classes
+		constructor(...parametersMap: any) {
+			const allClassNames = mixedClassClasses
 				.map((sourceClass) => sourceClass?.name);
-			const isIntantiatingAllWithOverrideValue = (
-				Array.isArray(parametersMap)
-				|| parametersMap == null
-			);
+			const isIntantiatingAllWithOverrideValue = !!isUsingSameParamsIntoConstructors
+				|| constructorIndex != null;
 			const parametersClassNames = isIntantiatingAllWithOverrideValue
 				? allClassNames
-				: Object.keys(parametersMap);
+				: Object.keys(parametersMap[0] ?? {});
 
 			// use 'argsKeys' instead of 'className' to invoke in order of keys in 'args'
 			for (let i = 0, l = parametersClassNames.length; i < l; ++i) {
@@ -58,12 +95,12 @@ export default function mixmix(
 						this,
 						Object
 							.getOwnPropertyDescriptors(
-								new classes[indexOfParametersClassName](
+								new mixedClassClasses[indexOfParametersClassName](
 									...(
 										isIntantiatingAllWithOverrideValue
 											// will be array since it's override value
-											? parametersMap as any[]
-											: parametersMap[parametersClassName]
+											? parametersMap as any[] ?? []
+											: parametersMap[0][parametersClassName] ?? []
 									),
 								),
 							),
@@ -71,6 +108,9 @@ export default function mixmix(
 			}
 		}
 	}
+
+	// reset options (fake instance things)
+	mixmix.options = { ...BASE_OPTIONS };
 
 	const mixedClassName = classes
 		.map((sourceClass) => sourceClass.name)

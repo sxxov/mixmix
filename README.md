@@ -41,7 +41,7 @@ If you prefer using CDN's instead:
 
 
 
-## Usage
+## Quick Start
 
 #### Initial setup:
 
@@ -113,7 +113,7 @@ const Sandwich = mixmix(Sand, Witch);
 The results of the invocation will be applied to the master class's instance, which in the following case will be `sandwich` :
 
 ```ts
-const sandwich = new Sandwich(/* ...parametersMap (see below) */);
+const sandwich = new Sandwich(/* parametersMap (see below) */);
 ```
 
 The name property of the class will then be the combination of all classes:
@@ -129,21 +129,32 @@ sandwich.name
 
 >Note: This will probably not be the *class variable name* you will be referencing in your code, as it will more likely be the variable it's stored in (eg. `const A = mixmix(A, B); A.name === 'AB'`).
 
+If you would like to use the constructor of one of the classes passed in, instead of this Frankenstein's monster, you can use `mixmix.withConstructorAt`
+
+```ts
+const Sandwich = mixmix.withConstructorAt(0, Sand, Witch) /* (see below) */
+const sandwich = new Sandwich();
+// Only `Sand.constructor` is executed
+```
 
 
-##### `parametersMap`
+
+## API
+
+##### mixmix(...class)
+
+* `...class`: Class[]
+
+```ts
+const Sandwich = mixmix(Sand, Witch);
+const sandwich = new Sandwich(/* parametersMap (see below) */);
+```
+
+###### parametersMap
 
 `Record<ClassNameString, any[]> | any[] | null | undefined`
 
-It takes in:
-
-1. Object with the target class's name ("`Sand`" or "`Witch`") as the key, and an array with parameters to pass into its constructor as the value.
-2. Array with parameters to pass into all of the constructors.
-3. `null` or `undefined`
-
-###### `parametersMap`'s Examples:
-
-1. `Record<ClassNameString, any[]>`
+It takes in an object with the target class's name ("`Sand`" or "`Witch`") as the key, and an array with parameters to pass into its constructor as the value.
 
 ```ts
 const Sandwich = mixmix(Sand, Witch);
@@ -159,49 +170,45 @@ const sandwich = new Sandwich({
 */
 ```
 
-2. `any[]`
+
+
+##### mixmix.withConstructorAt(index, ...class)
+
+* `index`: number
+* `...class`: Class[]
 
 ```ts
-const Sandwich = mixmix(Sand, Witch);
-const sandwich = new Sandwich(['Sand', 'of', 'a', NaN]);
+const Sandwich = mixmix.withConstructorAt(0, Sand, Witch);
+const sandwich = new Sandwich(/* `...parameters` into `Sand` */);
+
 /*
 	Executes:
 	
-	new Sand('Sand', 'of', 'a', NaN);
-	new Witch('Sand', 'of', 'a', NaN);
-	
-	
-	
-	Is Equivalent to:
-	
-	new Sandwich({
-		Sand: ['Sand', 'of', 'a', NaN],
-		Witch: ['Sand', 'of', 'a', NaN],
-	})
+	new Sand(...parameters);
+	// loop through all Witch's keys, something like this
+	Sandwich.prototype[key] = Witch.prototype[key] 
 */
 ```
 
-3. `null | undefined`
+
+
+##### mixmix.withSameParamsIntoConstructors(...class)
+
+* `...class`: Class[]
 
 ```ts
-const Sandwich = mixmix(Sand, Witch);
-const sandwich = new Sandwich();
+const Sandwich = mixmix.withSameParamsIntoConstructors(Sand, Witch);
+const sandwich = new Sandwich(/* `...parameters` into `Sand` and `Witch` */);
+
 /*
 	Executes:
 	
-	new Sand();
-	new Witch();
-	
-	
-	
-	Is Equivalent to:
-	
-	new Sandwich({
-		Sand: [],
-		Witch: [],
-	})
+	new Sand(...parameters);
+	new Witch(...parameters);
 */
 ```
+
+
 
 
 
