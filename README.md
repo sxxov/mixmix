@@ -3,7 +3,7 @@
 
 mix, stir, and blend; solve the problems with 'extend'
 
->  (**0.4kb**, ESM version, minified & gzipped).
+>  (**~0.5kb**, ESM version, minified & gzipped).
 
 
 
