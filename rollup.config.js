@@ -90,6 +90,7 @@ const config = [{
 if (!production) {
 	config.pop();
 	config.pop();
+	config.pop();
 }
 
 export default config;
