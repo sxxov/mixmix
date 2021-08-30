@@ -17,28 +17,28 @@ const BASE_OPTIONS: {
 mixmix.constructorIndex = null;
 // todo: use deep copy if using nested objects
 mixmix.options = { ...BASE_OPTIONS };
-mixmix.withConstructorAt = (index = 0, ...classes: Class[]): Class => {
+mixmix.withConstructorAt = <T extends Class>(index = 0, ...classes: Class[]): T => {
 	mixmix.options.constructorIndex = index;
 
-	return mixmix(...classes);
+	return mixmix<T>(...classes);
 };
-mixmix.withSameParamsIntoConstructors = (...classes: Class[]): Class => {
+mixmix.withSameParamsIntoConstructors = <T extends Class>(...classes: Class[]): T => {
 	mixmix.options.isUsingSameParamsIntoConstructors = true;
 
-	return mixmix(...classes);
+	return mixmix<T>(...classes);
 };
 // don't use directly,
 // use `withX` methods for now until nested options objects are implemented
 /** @deprecated */
-mixmix.withOptions = (options: typeof BASE_OPTIONS, ...classes: Class[]): Class => {
+mixmix.withOptions = <T extends Class>(options: typeof BASE_OPTIONS, ...classes: Class[]): T => {
 	mixmix.options = options;
 
-	return mixmix(...classes);
+	return mixmix<T>(...classes);
 };
 
-export default function mixmix(
+export default function mixmix<T extends Class>(
 	...classes: Class[]
-): Class {
+): T {
 	let mixedClassClasses = classes;
 	const {
 		isUsingSameParamsIntoConstructors,
@@ -140,7 +140,7 @@ export default function mixmix(
 		}
 	}
 
-	return MixedClass;
+	return MixedClass as T;
 }
 
 function defineProperties(
