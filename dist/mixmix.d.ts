@@ -1,16 +1,16 @@
 declare type Class = (new (...args: any[]) => any);
-declare function mixmix(...classes: Class[]): Class;
+declare function mixmix<T extends Class>(...classes: Class[]): T;
 declare namespace mixmix {
     var constructorIndex: any;
     var options: {
         constructorIndex: number;
         isUsingSameParamsIntoConstructors: boolean;
     };
-    var withConstructorAt: (index?: number, ...classes: Class[]) => Class;
-    var withSameParamsIntoConstructors: (...classes: Class[]) => Class;
-    var withOptions: (options: {
+    var withConstructorAt: <T extends Class>(index?: number, ...classes: Class[]) => T;
+    var withSameParamsIntoConstructors: <T extends Class>(...classes: Class[]) => T;
+    var withOptions: <T extends Class>(options: {
         constructorIndex: number;
         isUsingSameParamsIntoConstructors: boolean;
-    }, ...classes: Class[]) => Class;
+    }, ...classes: Class[]) => T;
 }
 export default mixmix;
